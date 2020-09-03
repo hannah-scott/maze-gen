@@ -2,9 +2,10 @@ import imageio
 import numpy as np
 from PIL import Image
 import time
+from functions import *
 
 # get maze from png into array
-im = imageio.imread('maze.png')
+im = imageio.imread('recursive-backtracking.png')
 im = im / 255
 
 class Maze:
@@ -108,7 +109,7 @@ class Maze:
                 if self.maze[i][j] >= 0:
                     row.append([self.maze[i][j] * 255] * 3)
                 else:
-                    color = np.array([85, 205, 252]) * (-1 * self.maze[i][j])**2 + np.array([247, 168, 184]) * (1 + self.maze[i][j])**2
+                    color = np.array([85, 205, 252]) * (-1 * self.maze[i][j]) + np.array([247, 168, 184]) * (1 + self.maze[i][j])
                     color = np.array(color, dtype=int)
                     row.append(color)
 
@@ -127,3 +128,5 @@ class Maze:
 maze = Maze(im)
 maze.dfs()
 maze.arr_to_png('solved.png')
+
+scale_png_up('solved.png', 10)

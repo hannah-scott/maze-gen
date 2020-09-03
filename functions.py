@@ -1,5 +1,6 @@
 import numpy as np
 from PIL import Image
+import imageio
 
 def arr_to_png(arr, fname):
     png = []
@@ -56,3 +57,18 @@ def set_element(grid, arr, value):
         grid[arr[1]][arr[0]] = value
     except IndexError:
         return None
+
+def scale_png_up(fname, scale):
+    im = imageio.imread(fname)
+
+    arr = []
+    for row in im:
+        r = []
+        for el in row:
+            for _ in range(scale):
+                r.append(el)
+
+        for _ in range(scale):
+            arr.append(r)
+
+    imageio.imsave('{}_{}.png'.format(fname[:-4], scale), arr)
