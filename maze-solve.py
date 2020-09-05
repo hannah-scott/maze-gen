@@ -5,7 +5,7 @@ import time
 from functions import *
 
 # get maze from png into array
-im = imageio.imread('recursive-backtracking.png')
+im = imageio.imread('fast-prim.png')
 im = im / 255
 
 class Maze:

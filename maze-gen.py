@@ -1,4 +1,5 @@
 import sys
+import time
 
 # print(sys.getrecursionlimit())
 sys.setrecursionlimit(10000)
@@ -39,6 +40,69 @@ class MazeGenerator:
         self.grid[current_location[1]][current_location[0]] = 1
         self.carve_path_from(current_location)
         # print(self.grid)
+
+    def get_frontiers(self, coords, value=0):
+        directions = [
+            [0, -1],
+            [0, 1],
+            [-1, 0],
+            [1, 0]
+        ]
+
+        fs = []
+
+        for d in directions:
+            f = (coords[0] + 2 * d[0], coords[1] + 2 * d[1])
+            if f[0] in range(self.width) and f[1] in range(self.height) and self.grid[f[1]][f[0]] == value:
+                fs.append(f)
+
+        return fs
+
+    def fast_prim(self):
+        start = time.time()
+        current_location = [np.random.randint(0, self.width), np.random.randint(0, self.height)]
+
+        directions = [
+            [0, -1],
+            [0, 1],
+            [-1, 0],
+            [1, 0]
+        ]
+
+        frontiers = self.get_frontiers(current_location)
+
+        self.grid[current_location[1]][current_location[0]] = 1
+
+        print(self.grid)
+        print(frontiers)
+        i = 1
+
+        while len(frontiers) > 0:
+            if i% 1000 == 0:
+                print("* Step {}: {} frontiers unexplored".format(i, len(frontiers)))
+            i += 1
+
+            # pick a random frontier point
+            np.random.shuffle(frontiers)
+            next_f = frontiers[0]
+            frontiers = frontiers[1:]
+
+            # find a random nearest point
+            neighbours = self.get_frontiers(next_f, value=1)
+            np.random.shuffle(neighbours)
+            next_n = neighbours[0]
+            next_d = [int((next_f[0] - next_n[0])/2), int((next_f[1] - next_n[1])/2)]
+
+            if self.grid[next_n[1] + next_d[1]][next_n[0] + next_d[0]] == 0:
+                # mark frontier, wall in between as 0
+                self.grid[next_f[1]][next_f[0]] = 1
+                self.grid[next_n[1] + next_d[1]][next_n[0] + next_d[0]] = 1
+
+                for f in self.get_frontiers(next_f):
+                    frontiers.append(f)
+                    frontiers = list(set(frontiers))
+        print("* Finished in {} seconds!".format(time.time() - start))
+
 
     def prim(self):
         wall_list = []
@@ -123,8 +187,8 @@ class MazeGenerator:
         extended_grid[-1][end] = 1
         arr_to_png(extended_grid, fname)
 
-gen = MazeGenerator(107,233)
+gen = MazeGenerator(2000,2000)
 # gen.prim()
 # gen.grid_to_png('maze.png')
-gen.recursive_backtracking()
-gen.grid_to_png('recursive-backtracking.png')
+gen.fast_prim()
+gen.grid_to_png('fast-prim.png')
