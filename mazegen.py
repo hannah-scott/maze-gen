@@ -1,5 +1,6 @@
 import sys
 import time
+import streamlit as st
 
 # print(sys.getrecursionlimit())
 sys.setrecursionlimit(10000)
@@ -76,6 +77,8 @@ class MazeGenerator:
         print(self.grid)
         print(frontiers)
         i = 1
+
+        place = st.empty()
 
         while len(frontiers) > 0:
             if i% 1000 == 0:
@@ -157,7 +160,7 @@ class MazeGenerator:
 
         print("Process ended in {} steps".format(i))
 
-    def grid_to_png(self, fname):
+    def extended_grid(self):
         # remove top or bottom if all zeros
         if np.array(self.grid[0]).sum() == 0:
             self.grid = self.grid[1:]
@@ -185,10 +188,15 @@ class MazeGenerator:
         # print(possible_ends)
         end = possible_ends[np.random.randint(0, len(possible_ends))]
         extended_grid[-1][end] = 1
+
+        return extended_grid
+
+    def grid_to_png(self, fname):
+        extended_grid = self.extended_grid()
         arr_to_png(extended_grid, fname)
 
-gen = MazeGenerator(2000,2000)
-# gen.prim()
-# gen.grid_to_png('maze.png')
-gen.fast_prim()
-gen.grid_to_png('fast-prim.png')
+# gen = MazeGenerator(2000,2000)
+# # gen.prim()
+# # gen.grid_to_png('maze.png')
+# gen.fast_prim()
+# gen.grid_to_png('fast-prim.png')
