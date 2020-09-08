@@ -6,10 +6,13 @@ import numpy as np
 # Maze generator
 '''
 
-algorithm = st.radio(label="Algorithm", options = ["Prim's algorithm", 'Recursive backtracking'])
+algorithm = st.radio(label="Algorithm", options = ["Prim's algorithm", 'Recursive backtracking', 'Growing tree'])
 
 width = st.select_slider('Width', options=range(10,110,10))
 height = st.select_slider('Height', options=range(10,110,10))
+
+if algorithm == 'Growing tree':
+    prob = st.slider('p', min_value = 0.0, max_value = 1.0, step=0.1)
 
 maze = MazeGenerator(width,height)
 
@@ -17,6 +20,8 @@ if algorithm == "Prim's algorithm":
     maze.fast_prim()
 elif algorithm == 'Recursive backtracking':
     maze.recursive_backtracking()
+elif algorithm == 'Growing tree':
+    maze.growing_tree(prob)
 
 maze.grid = maze.extended_grid()
 
