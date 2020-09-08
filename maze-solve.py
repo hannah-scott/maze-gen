@@ -3,10 +3,7 @@ import numpy as np
 from PIL import Image
 import time
 from functions import *
-
-# get maze from png into array
-im = imageio.imread('fast-prim.png')
-im = im / 255
+import argparse
 
 class Maze:
     def __init__(self, im):
@@ -58,6 +55,8 @@ class Maze:
             # say you've already been here
             self.maze[current_location[1]][current_location[0]] = 2
             steps += 1
+            if steps % 1000 == 0:
+                print("* Step {}, best path is {} so far".format(steps, len(self.best_path)))
             # print(self.best_path)
             self.best_path.append(current_location)
             # print(current_location)
@@ -92,7 +91,7 @@ class Maze:
                  current_location = ones[0]
         self.maze[current_location[1]][current_location[0]] = 2
         self.best_path.append(self.end)
-        print("Solved! {}s".format(time.time() - start))
+        print("Solved! {}s, best path is {} steps".format(time.time() - start, len(self.best_path)))
 
         for i in range(len(self.best_path)):
             self.maze[self.best_path[i][1]][self.best_path[i][0]] = - (i + 1)/len(self.best_path)
@@ -125,8 +124,22 @@ class Maze:
         im.convert('RGB')
         im.save(fname)
 
-maze = Maze(im)
-maze.dfs()
-maze.arr_to_png('solved.png')
+parser = argparse.ArgumentParser()
 
-scale_png_up('solved.png', 10)
+parser.add_argument('--fname', '-f', type=str)
+parser.add_argument('--outfile', '-o', type=str)
+
+args = parser.parse_args()
+
+if args.fname:
+    # get maze from png into array
+    im = imageio.imread(args.fname)
+    im = im / 255
+    maze = Maze(im)
+    maze.dfs()
+    
+    if not(args.outfile):
+        outfile = 'solved.png'
+    else:
+        outfile = args.outfile
+    maze.arr_to_png(outfile)
