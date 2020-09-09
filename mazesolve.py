@@ -98,48 +98,48 @@ class Maze:
 
         return self.maze
 
-    def arr_to_png(self, fname):
+    def arr_to_png(self):
         png = []
 
         for i in range(len(self.maze)):
             row = []
             for j in range(len(self.maze[i])):
-                # for _ in range(10):
-                if self.maze[i][j] >= 0:
-                    row.append([self.maze[i][j] * 255] * 3)
-                else:
-                    color = np.array([85, 205, 252]) * (-1 * self.maze[i][j]) + np.array([247, 168, 184]) * (1 + self.maze[i][j])
-                    color = np.array(color, dtype=int)
-                    row.append(color)
+                for _ in range(10):
+                    if self.maze[i][j] >= 0:
+                        row.append([self.maze[i][j] * 255] * 3)
+                    else:
+                        color = np.array([85, 205, 252]) * (-1 * self.maze[i][j]) + np.array([247, 168, 184]) * (1 + self.maze[i][j])
+                        color = np.array(color, dtype=int)
+                        row.append(color)
 
-            # for _ in range(10):
+            for _ in range(10):
             # print(row)
-            png.append(row)
+                png.append(row)
 
         fft_p = np.array(png)
         fft_p = fft_p.astype(np.uint8)
-
+        return fft_p
         # print(fft_p)
-        im = Image.fromarray(fft_p)
-        im.convert('RGB')
-        im.save(fname)
-
-parser = argparse.ArgumentParser()
-
-parser.add_argument('--fname', '-f', type=str)
-parser.add_argument('--outfile', '-o', type=str)
-
-args = parser.parse_args()
-
-if args.fname:
-    # get maze from png into array
-    im = imageio.imread(args.fname)
-    im = im / 255
-    maze = Maze(im)
-    maze.dfs()
-    
-    if not(args.outfile):
-        outfile = 'solved.png'
-    else:
-        outfile = args.outfile
-    maze.arr_to_png(outfile)
+        # im = Image.fromarray(fft_p)
+        # im.convert('RGB')
+        # im.save(fname)
+#
+# parser = argparse.ArgumentParser()
+#
+# parser.add_argument('--fname', '-f', type=str)
+# parser.add_argument('--outfile', '-o', type=str)
+#
+# args = parser.parse_args()
+#
+# if args.fname:
+#     # get maze from png into array
+#     im = imageio.imread(args.fname)
+#     im = im / 255
+#     maze = Maze(im)
+#     maze.dfs()
+#
+#     if not(args.outfile):
+#         outfile = 'solved.png'
+#     else:
+#         outfile = args.outfile
+#     maze.arr_to_png(outfile)

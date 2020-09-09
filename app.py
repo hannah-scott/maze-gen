@@ -1,5 +1,6 @@
 import streamlit as st
 from mazegen import MazeGenerator
+from mazesolve import Maze
 import numpy as np
 
 '''
@@ -38,5 +39,12 @@ for i in range(len(maze.grid)):
 fft_p = np.array(png)
 fft_p = fft_p.astype(np.uint8)
 
+png = np.array(png)
+png = png.astype(np.uint8)
 
-st.image(fft_p)
+if st.checkbox(label="Solve?"):
+    maze = Maze(maze.grid)
+    maze.dfs()
+    st.image(maze.arr_to_png())
+else:
+    st.image(fft_p)
